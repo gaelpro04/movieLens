@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
+console.log("API_BASE:", API_BASE);
 
 function MyApp() {
   return(
@@ -27,7 +29,7 @@ function Stage() {
     }
 
     async function search() {
-      const res = await fetch(`http://localhost:3000/api/movies/search/${query}`);
+      const res = await fetch(`${API_BASE}/api/movies/search/${query}`);
       const data = await res.json();      
       setMatches(data);
     }
@@ -43,7 +45,7 @@ function Stage() {
       setClicked(false);
     }, 500);
 
-    const res = await fetch(`http://localhost:3000/api/movie/${movie.id}`);
+    const res = await fetch(`${API_BASE}/api/movie/${movie.id}`);
     const data = await res.json();
 
     setMovieCredits(data.credits);       
@@ -256,13 +258,13 @@ function DivMedium({onMovie}) {
 
   useEffect(() => {
     async function getPopularMovies() {
-      const res = await fetch(`http://localhost:3000/api/movies/popular`);
+      const res = await fetch(`${API_BASE}/api/movies/popular`);
       const data = await res.json();
       setPopular20Movies(data);
       
       let movieId = data[0].id;
 
-      const res1 = await fetch(`http://localhost:3000/api/movie/${movieId}`);
+      const res1 = await fetch(`${API_BASE}/api/movie/${movieId}`);
       const data1 = await res1.json();
       setCreditsPM(data1.credits);
       setReviews(data1.reviews.results);
@@ -355,7 +357,7 @@ function DivAbove({ onMovie }) {
 
   useEffect(() => {
     async function getAllGenres() {
-      const res = await fetch(`http://localhost:3000/api/movies/genres`);
+      const res = await fetch(`${API_BASE}/api/movies/genres`);
       const data = await res.json();
 
       const fiveGenres = data.genres.slice(0, 5);
@@ -363,7 +365,7 @@ function DivAbove({ onMovie }) {
       const results = await Promise.all(
         fiveGenres.map(async (genre) => {
           const res1 = await fetch(
-            `http://localhost:3000/api/movies/genres/${genre.id}`
+            `${API_BASE}/api/movies/genres/${genre.id}`
           );
           const data1 = await res1.json();
           return { genre, movies: data1.results };
